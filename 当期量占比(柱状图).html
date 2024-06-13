@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+  
+  <script type="text/javascript" src="src/echarts.min.js"></script>
+  <script type="text/javascript" src="src/dataTool.min.js"></script>
+  <script type="text/javascript" src="src/echarts-gl.min.js"></script>
+  <script type="text/javascript" src="src/d3.v3.min.js"></script>
+  <script type="text/javascript" src="src/ecStat.min.js"></script>
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    
+    var option;
+
+  const rawData = [
+    [28986,27974,35169,32499,42860,40919,32682,32560,32900,28038,27297,23609,9913,7374,11896,14752,21732,22615,16736,9225,5691,10145,19052,17874,16498,14396,24767,22711,15409,30847,24607],
+    [38640,39967,41888,39980,41625,40798,39041,39141,38300,36127,32551,29187,23771,24146,28147,30700,32890,34184,31637,26686,25595,29759,33328,33801,37587,36521,42429,40505,36243,45695,44895],
+    [25771,24491,22836,20316,18414,14821,11787,9748,7300,5118,3257,1554,11627,11060,10356,9197,8246,6477,4775,3743,3079,2647,1981,908,16337,15498,14529,12860,11757,10746,8801],
+    [5059,4899,5605,5349,6396,6243,5312,5170,5000,4569,4320,3977,1871,1257,1592,2010,3230,3400,2200,1207,788,1537,3129,2951,2710,2153,3886,3612,2241,4912,4128],
+  ];
+
+  const totalData = [];
+  for (let i = 0; i < rawData[0].length; ++i) {
+    let sum = 0;
+    for (let j = 0; j < rawData.length; ++j) {
+      sum += rawData[j][i];
+    }
+    totalData.push(sum);
+  }
+
+  const grid = {
+    left: 50,
+    right: 50,
+    top: 50,
+    bottom: 50
+  };
+
+const gridWidth = myChart.getWidth() - grid.left - grid.right;
+const gridHeight = myChart.getHeight() - grid.top - grid.bottom;
+const categoryWidth = gridWidth / rawData[0].length;
+const barWidth = categoryWidth * 0.1;
+const barPadding = (categoryWidth - barWidth)/1.5;
+
+const series = [
+  '铁路',
+  '公路',
+  '水运',
+  '民航',
+].map((name, sid) => {
+  return {
+    name,
+    type: 'bar',
+    stack: 'total',
+    barWidth: categoryWidth * 0.6,
+
+    label: {
+      show: true,
+      formatter: (params) => Math.round(params.value * 1000) / 10 + '%'
+    },
+    data: rawData[sid].map((d, did) =>
+      totalData[did] <= 0 ? 0 : d / totalData[did]
+    )
+  };
+});
+const color = ['#5470c6', '#91cc75', '#fac858', '#ee6666'];
+const elements = [];
+
+option = {
+  title:{
+    text:'当期量占比情况'
+  },
+  legend: {
+    selectedMode: false
+  },
+  grid,
+  yAxis: {
+    type: 'value',
+    min:0,
+    max:1
+  },
+  xAxis: {
+    type: 'category',
+    data: ['2023年12月','2023年11月','2023年10月','2023年9月','2023年8月','2023年7月','2023年6月','2023年5月','2023年4月','2023年3月','2023年2月','2023年1月','2022年12月','2022年11月','2022年10月','2022年9月','2022年8月','2022年7月','2022年6月','2022年5月','2022年4月','2022年3月','2022年2月','2022年1月','2021年12月','2021年11月','2021年10月','2021年9月','2021年8月','2021年7月','2021年6月']
+  },
+  series,
+  graphic: {
+    elements
+  }
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+  </script>
+</body>
+</html>

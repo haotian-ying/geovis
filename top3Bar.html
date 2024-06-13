@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scenic Spots Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .bar:hover {
+            fill: orange;
+        }
+
+        .axis-label {
+            font-size: 12px;
+            font-family: Arial, sans-serif;
+        }
+
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 8px;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <h2>每个省的Top 3 </h2>
+    <div id="chart"></div>
+    <script>
+        // Load data from JSON file
+        d3.json('data/top3_data.json').then(data => {
+            const margin = {top: 20, right: 30, bottom: 100, left: 50},
+                  width = document.body.clientWidth - margin.left - margin.right,
+                  height = 500 - margin.top - margin.bottom;
+
+            const svg = d3.select("#chart")
+                          .append("svg")
+                          .attr("width", width + margin.left + margin.right)
+                          .attr("height", height + margin.top + margin.bottom)
+                          .append("g")
+                          .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const x = d3.scaleBand()
+                        .domain(data.map(d => d.名称))
+                        .range([0, width])
+                        .padding(0.1);
+
+            const y = d3.scaleLinear()
+                        .domain([0, d3.max(data, d => d.热度)]).nice()
+                        .range([height, 0]);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            const xAxis = g => g
+             .attr("transform", `translate(0,${height})`)
+             .call(d3.axisBottom(x).tickSizeOuter(0))
+             .selectAll("text")
+             .attr("transform", "rotate(-35)")
+             .style("text-anchor", "end")
+             .style("font-size", "12px")
+             .attr("dx", "-0.8em") // 将标签向左偏移以避免重叠
+             .attr("dy", "0.15em"); // 调整垂直偏移量以垂直居中
+
+
+            const yAxis = g => g
+                .call(d3.axisLeft(y))
+                .call(g => g.select(".domain").remove())
+                .call(g => g.append("text")
+                    .attr("x", -margin.left)
+                    .attr("y", -10)
+                    .attr("fill", "currentColor")
+                    .attr("text-anchor", "start")
+                    .text("热度"));
+
+            svg.append("g")
+                .selectAll(".bar")
+                .data(data)
+                .enter().append("rect")
+                .attr("class", "bar")
+                .attr("x", d => x(d.名称))
+                .attr("y", d => y(d.热度))
+                .attr("height", d => y(0) - y(d.热度))
+                .attr("width", x.bandwidth())
+                .attr("fill", (d, i) => color(i));
+
+            svg.append("g")
+                .call(xAxis);
+
+            svg.append("g")
+                .call(yAxis);
+
+            // Tooltip
+            const tooltip = d3.select("body").append("div")
+                              .attr("class", "tooltip")
+                              .style("opacity", 0);
+
+            svg.selectAll(".bar")
+                .on("mouseover", function(event, d) {
+                    tooltip.transition()
+                           .duration(200)
+                           .style("opacity", .9);
+                    tooltip.html(`名称: ${d.名称}<br>热度: ${d.热度}`)
+                           .style("left", (event.pageX) + "px")
+                           .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", function() {
+                    tooltip.transition()
+                           .duration(500)
+                           .style("opacity", 0);
+                });
+        }).catch(error => {
+            console.error('Error loading or parsing data:', error);
+        });
+    </script>
+</body>
+</html>

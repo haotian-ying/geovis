@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>五一出游数据可视化</title>
+    <!-- https://unpkg.com/leaflet@0.7.7/dist/leaflet.js -->
+    <link rel="stylesheet" href="src/leaflet.css" />
+    <script src="src/leaflet.js"></script>
+    <script src="src/d3.v3.min.js"></script>   
+    <style>
+        #map { width: 1000px; height: 600px; }
+        body { font: 16px/1.4 "Helvetica Neue", Arial, sans-serif; }
+        .ghbtns { position: relative; top: 4px; margin-left: 5px; }
+        a { color: #0077ff; }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<script src="src/leaflet-heat.js"></script>
+
+<script>
+
+    var map = L.map('map').setView([31.229316, 121.399288], 10);
+
+    var tiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    var addressPoints = [];
+    d3.json("data/delta.json", function(error, data) {
+        if (error) {
+            console.error('Error loading data:', error);
+            return;
+        }
+        
+        // 遍历并存储数据
+        for (let i = 0; i < data.length; i++) {
+            addressPoints.push([data[i].纬度, data[i].经度, data[i].客流量 / 100]); // 确保正确的顺序和缩放客流量值
+            console.log(data[i]);  // 打印出每个数据对象以分析其内容
+        }
+
+        // 检查数据点是否存在
+        if (addressPoints.length > 0) {
+            console.log(addressPoints[0]);
+
+            // 使用 Leaflet 绘制热力图
+            L.heatLayer(addressPoints, {
+                radius: 20,  // 热力图点的半径
+            }).addTo(map);
+        } else {
+            console.error('No valid data points found.');
+        }
+    });
+    
+
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地理数据可视化</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 25px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>地理数据可视化</h1>
+        <p>by 何景鸿，王晨曦，应昊天，张丰识</p>
+        <button class="button" onclick="location.href='flowMap.html'">全国景点流线图</button>
+        <button class="button" onclick="location.href='heatMap.html'">长三角景点热力图</button>
+        <button class="button" onclick="location.href='scatterMap.html'">上海景点散点图</button>
+        <button class="button" onclick="location.href='top3Bar.html'">全国景点热度排行</button>
+        <button class="button" onclick="location.href='chart.html'">月度运输量</button>
+    </div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>月度数据可视化</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            width: 80%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .button-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>月度运输量</h1>
+        <p>点击切换图表</p>
+        <div class="button-container">
+            <button class="button" onclick="changeChart('当期量占比(柱状图).html')">当期量占比(柱状图)</button>
+            <button class="button" onclick="changeChart('当期量占比(饼图).html')">当期量占比(饼图)</button>
+            <button class="button" onclick="changeChart('当期量对比.html')">当期量对比</button>
+            <button class="button" onclick="changeChart('月度运输量_公路.html')">月度运输量_公路</button>
+            <button class="button" onclick="changeChart('月度运输量_客运量.html')">月度运输量_客运量</button>
+            <button class="button" onclick="changeChart('月度运输量_民航.html')">月度运输量_民航</button>
+            <button class="button" onclick="changeChart('月度运输量_水运.html')">月度运输量_水运</button>
+            <button class="button" onclick="changeChart('月度运输量_铁路.html')">月度运输量_铁路</button>
+            <button class="button" onclick="changeChart('累计增长.html')">累计增长</button>
+        </div>
+        <iframe id="chartFrame" src="当期量占比(柱状图).html"></iframe>
+    </div>
+
+    <script>
+        function changeChart(url) {
+            document.getElementById('chartFrame').src = url;
+        }
+    </script>
+</body>
+</html>

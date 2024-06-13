@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>地图</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    #container {
+      width: 1000px;
+      height: 1000px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script src="src/d3.v3.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/4.8.0/echarts.min.js"></script>
+  <script>
+    const arr = [];
+    //暂时爬取了上海景区数据
+    d3.json("data/shanghai.json", function (data) { 
+      //console.log(data); 
+      const len = data.length;
+      for(let i = 0;i < len;i++){
+        //console.log(data[i]);
+        arr.push([data[i].latitude,data[i].longitude,data[i].热度,data[i].名称]);
+      }
+    }); 
+  
+    var myChart = echarts.init(document.getElementById('container'));
+    $.get('https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=310000_full', result => {
+      // 注册 echarts 地图
+      echarts.registerMap('上海市', result);
+      var option = {
+        title: {
+          text: '上海旅游地图',
+          x: "center",
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            // `params` 包含当前数据项的详细信息
+            var data = params.data;
+            return `
+              <div>
+                <strong>名称:</strong> ${data[3]}<br>
+                <strong>热度:</strong> ${data[2]}<br>
+              </div>
+            `;
+          }
+        },
+
+        geo: {
+          map: '上海市',
+          tooltip: {
+            show: true
+          },
+          roam: true,
+          itemStyle: {
+
+          }
+        },
+        grid: {
+          zoom: {
+            minZoom: 0.1,
+            maxZoom: 1.5,
+            zoomOnMouseWheel: true
+          }
+        },
+        series: [{
+          type: 'effectScatter',
+          geoIndex: 0,
+          coordinateSystem: 'geo',
+          rippleEffect: {
+            brushType: 'stroke'
+          },
+          //热度圈大小
+          symbolSize: function(val, params) {
+            //console.log(params.data[2]);
+            return (params.data[2] / 10000) * 15 + 5;
+          },
+          itemStyle: {
+            color: '#b02a02'
+          },
+          encode: {
+            tooltip: [0, 1, 2 , 3]
+          },
+          data:arr,
+        }]
+      };
+      myChart.setOption(option);
+    })
+  </script>
+</body>
+
+</html>

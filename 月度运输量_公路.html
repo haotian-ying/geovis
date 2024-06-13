@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" style="height: 100%">
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+
+  <script type="text/javascript" src="src/echarts.min.js"></script>
+  <script type="text/javascript" src="src/dataTool.min.js"></script>
+  <script type="text/javascript" src="src/echarts-gl.min.js"></script>
+  <script type="text/javascript" src="src/d3.v3.min.js"></script>
+  <script type="text/javascript" src="src/ecStat.min.js"></script>
+
+  <script type="text/javascript">
+    var dom = document.getElementById('container');
+    var myChart = echarts.init(dom, null, {
+      renderer: 'canvas',
+      useDirtyRect: false
+    });
+    var app = {};
+    
+    var option;
+
+    option = {
+      title:{
+        text:'公路月度客运量'
+      },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        crossStyle: {
+          color: '#999'
+        }
+      }
+  },
+  toolbox: {
+    feature: {
+      dataView: { show: true, readOnly: false },
+      magicType: { show: true, type: ['line', 'bar'] },
+      restore: { show: true },
+      saveAsImage: { show: true }
+    }
+  },
+  legend: {
+    data: ['当期值', '同比增长',]
+  },
+  xAxis: [
+    {
+      type: 'category',
+      data: ['2023年12月','2023年11月','2023年10月','2023年9月','2023年8月','2023年7月','2023年6月','2023年5月','2023年4月','2023年3月','2023年2月','2023年1月','2022年12月','2022年11月','2022年10月','2022年9月','2022年8月','2022年7月','2022年6月','2022年5月','2022年4月','2022年3月','2022年2月','2022年1月','2021年12月','2021年11月','2021年10月','2021年9月','2021年8月','2021年7月','2021年6月'],
+      axisPointer: {
+        type: 'shadow'
+      }
+    }
+  ],
+  yAxis: [
+    {
+      type: 'value',
+      name: '当期值(万人)',
+      min: 20000,
+      max: 48000,
+      interval: 5000,
+      axisLabel: {
+        formatter: '{value}'
+      }
+    },
+    {
+      type: 'value',
+      name: '同比增长(百分比)',
+      min: -100,
+      max: 100,
+      interval: 30,
+      axisLabel: {
+        formatter: '{value} %'
+      }
+    }
+  ],
+  series: [
+    {
+      name: '当期值',
+      type: 'bar',
+      barWidth:'50%',
+      tooltip: {
+        valueFormatter: function (value) {
+          return value + '万人';
+        }
+      },
+      data: [38640,39967,41888,39980,41625,40798,39041,39141,38300,36127,32551,29187,23771,24146,28147,30700,32890,34184,31637,26686,25595,29759,33328,33801,37587,36521,42429,40505,36243,45695,44895],
+      itemStyle: {
+        color: '#eedeb0' // 设置柱状图的颜色
+      }
+    },
+    {
+      name: '同比增长',
+      type: 'line',
+      yAxisIndex: 1,
+      tooltip: {
+        valueFormatter: function (value) {
+          return value + ' %';
+        }
+      },
+      data: [62.6,65.5,48.8,30.2,26.6,19.3,23.4,46.7,49.7,21.4,-2.3,-13.7,-36.8,-33.9,-33.7,-24.2,-9.3,-25.3,-29.6,-44.7,-43.9,-32.6,-15.5,-28.9,-38.0,-43.3,-42.0,-39.9,-45.9,-27.8,-24.1],
+      itemStyle: {
+        color: '#6e511e'
+      }
+    },
+  ]
+};
+
+    if (option && typeof option === 'object') {
+      myChart.setOption(option);
+    }
+
+    window.addEventListener('resize', myChart.resize);
+    </script>
+</body>
+</html>
